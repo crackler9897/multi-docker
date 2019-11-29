@@ -1,0 +1,25 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build crackler/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true crackler/react-test npm
+
+after_success:
+  - docker build -t crackler/multi-client ./client
+  - docker build -t crackler/multi-nginx ./nginx
+  - docker build -t crackler/multi-server ./server
+  - docker build -t crackler/multi-worker ./worker
+  
+  # Log into the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Push images to docker hub
+- docker push crackler/multi-client
+- docker push crackler/multi-nginx
+- docker push crackler/multi-server
+- docker push crackler/multi-worker
+
