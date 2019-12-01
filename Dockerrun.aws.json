@@ -1,0 +1,35 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "client",
+      "image":  "crackler/multi-client",
+      "hostname": "client",
+      "essential":  false
+    },
+    {
+      "name": "server",
+      "image":  "crackler/multi-server",
+      "hostname": "api",
+      "essential":  false
+    },
+    {
+      "name": "worker",
+      "image":  "crackler/multi-worker",
+      "hostname": "worker",
+      "essential":  false
+    },
+    {
+      "name": "nginx",
+      "image":  "crackler/multi-nginx",
+      "essential":  true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links":  ["client", "server"]
+    }
+  ]
+}
